@@ -40,20 +40,32 @@ $Item[0] = new Item();
 $Item[1] = new Item();
 $Item[2] = new Item();
 
-$Item[0]->setEmail(1111);
-$Item[1]->setEmail(2222);
+$Item[0]->setEmail('E1111');
+$Item[1]->setEmail('E2222');
 $Item[1]->setName(2222);
-$Item[2]->setEmail(3333);
+$Item[2]->setEmail('E3333');
 $Item[2]->setName(3333);
 
 
+// 重构一
+// function getEmail($items) {
+// 	return array_map(function($item){
+// 		return $item->email;
+// 	}, array_filter($items, function($item){
+// 		return $item->email != null;
+// 	}));
+// }
 
+// 重构二
 function getEmail($items) {
-	return array_map(function($item){
-		return $item->email;
-	}, array_filter($items, function($item){
+	return (new Collection($items))
+	->filter(function($item){
 		return $item->email != null;
-	}));
+	})
+	->map(function($item){
+		return $item->email;
+	})
+	->toArray();
 }
-
 var_dump(getEmail($Item));
+
